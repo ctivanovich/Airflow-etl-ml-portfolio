@@ -1,0 +1,14 @@
+.vscode/
+*.ipynb_checkpoints
+*__pycache__
+*.log
+*.pyc
+*.pkl
+logs/
+__pycache__
+airflow.db
+*out.ipynb
+*my.cnf
+*.csv
+cropped*/
+*.h5
