@@ -3,12 +3,24 @@ This a portfolio containing Airflow, ETL DAGs, ML notebook tasks, Dockerfiles, S
 
 The layout is as follows:
 
-/airflow
-
-  --> airflow/
-      --> dags: containing DAG definition files
-          --> modules: containing support code, in abidance with the principle that DAG files should primarily contain DAG definitions, not functions.
-
-/docker
-
-/nb_production
+<pre>
+├── airflow
+│   ├── airflow
+│   │   ├── dags
+│   │   │   └── modules
+│   │   ├── logs
+│   │   │   └── scheduler
+│   │   └── scripts
+│   └── docker
+│       ├── docker-airflow
+│       │   └── docker-airflow
+│       │       ├── config
+│       │       ├── dags
+│       │       └── script
+│       └── docker-nbrun
+└── nb_production
+    └── recommend-users
+        ├── recommend-images-v1
+        │   └── scripts
+        └── recommend-implicit-v2
+</pre>
