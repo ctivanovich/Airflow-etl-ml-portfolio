@@ -4,23 +4,23 @@ This a portfolio containing Airflow, ETL DAGs, ML notebook tasks, Dockerfiles, S
 The layout is as follows:
 
 <pre>
-├── airflow
+├── data-platform
 │   ├── airflow
-│   │   ├── dags
-│   │   │   └── modules
+│   │   ├── dags --production DAG definitions
+│   │   │   └── modules --supporting and extensible code
 │   │   ├── logs
 │   │   │   └── scheduler
-│   │   └── scripts
+│   │   └── scripts --VM/server-side scripts
 │   └── docker
 │       ├── docker-airflow
 │       │   └── docker-airflow
-│       │       ├── config
-│       │       ├── dags
-│       │       └── script
-│       └── docker-nbrun
+│       │       ├── config --Airflow config
+│       │       ├── dags --sample DAG definitions
+│       │       └── script --entrypoint.sh
+│       └── docker-nbrun --definitions for machine and deep learning containers for machine and deep learning
 └── nb_production
     └── recommend-users
-        ├── recommend-images-v1
-        │   └── scripts
-        └── recommend-implicit-v2
+        ├── recommend-images-v1 --image-based recommendation engine
+        │   └── scripts --supporting Class definitions
+        └── recommend-implicit-v2 --implicit, SVD+ collaborative filtering approach to recommendations
 </pre>
