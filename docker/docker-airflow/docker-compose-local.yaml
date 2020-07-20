@@ -1,0 +1,34 @@
+version: '3'
+services:
+    postgres:
+        image: postgres:10.0
+        restart: always
+        environment:
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+        # Uncomment these lines to persist data on the local filesystem.
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        volumes:
+            - /mnt/c/users/christopher.ivanovic/Desktop/LinkBal/dataplatform2/pgdata:/var/lib/postgresql/data/pgdata
+        ports:
+            - "5432:5432"
+    webserver:
+        build: /mnt/c/users/christopher.ivanovic/Desktop/LinkBal/dataplatform2/dp-airflow/docker/docker-airflow/docker-airflow
+        restart: always
+        depends_on:
+            - postgres
+        environment:
+            - LOAD_EX=n
+            - EXECUTOR=Local
+        volumes: #mounting requirements: dags, repositories, gitlab ssh keys, gcloud SA for gcs & bq
+            - /mnt/c/users/christopher.ivanovic/Desktop/LinkBal/dataplatform2/dp-airflow/airflow/dags:/usr/local/airflow/dags
+            - /mnt/c/users/christopher.ivanovic/Desktop/LinkBal/dataplatform2:/opt/dataplatform2
+        ports:
+            - "8080:8080"
+        command: webserver
+        healthcheck:
+            test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+            interval: 30s
+            timeout: 30s
+            retries: 3

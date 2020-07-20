@@ -1,0 +1,92 @@
+version: '3.0'
+services:
+    redis:
+        image: 'redis:5.0.5'
+        command: redis-server --requirepass redispass
+
+    postgres:
+        image: postgres:10.0
+        restart: always
+        environment:
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+        # Uncomment these lines to persist data on the local filesystem.
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        volumes:
+            - /mnt/c/users/christopher.ivanovic/Desktop/LinkBal/dataplatform2/pgdata:/var/lib/postgresql/data/pgdata
+        ports:
+            - "5432:5432"
+
+    webserver:
+        image: dp2-airflow
+        restart: always
+        depends_on:
+            - postgres
+            - redis
+        environment:
+            - LOAD_EX=n
+            - EXECUTOR=Celery
+            - FERNET_KEY
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+            - REDIS_PASSWORD=redispass
+        volumes:
+            - /mnt/c/users/christopher.ivanovic/Desktop/LinkBal/dataplatform2/dp-airflow/airflow/dags:/usr/local/airflow/dags
+            - /mnt/c/users/christopher.ivanovic/Desktop/LinkBal/dataplatform2:/opt/dataplatform2
+        ports:
+            - "8080:8080"
+        command: webserver
+        healthcheck:
+            test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+            interval: 30s
+            timeout: 30s
+            retries: 3
+
+    flower:
+        image: dp2-airflow
+        restart: always
+        depends_on:
+            - redis
+        environment:
+            - EXECUTOR=Celery
+            - REDIS_PASSWORD=redispass
+        ports:
+            - "5555:5555"
+        command: flower
+
+    scheduler:
+        image: dp2-airflow
+        restart: always
+        depends_on:
+            - webserver
+        volumes:
+            - /mnt/c/users/christopher.ivanovic/Desktop/LinkBal/dataplatform2/dp-airflow/airflow/dags:/usr/local/airflow/dags
+            - /mnt/c/users/christopher.ivanovic/Desktop/LinkBal/dataplatform2:/opt/dataplatform2
+        environment:
+            - LOAD_EX=n
+            - EXECUTOR=Celery
+            - FERNET_KEY
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+            - REDIS_PASSWORD=redispass
+        command: scheduler
+
+    worker:
+        image: dp2-airflow
+        restart: always
+        depends_on:
+            - scheduler
+        volumes:
+            - /mnt/c/users/christopher.ivanovic/Desktop/LinkBal/dataplatform2/dp-airflow/airflow/dags:/usr/local/airflow/dags
+            - /mnt/c/users/christopher.ivanovic/Desktop/LinkBal/dataplatform2:/opt/dataplatform2
+        environment:
+            - EXECUTOR=Celery
+            - FERNET_KEY
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+            - REDIS_PASSWORD=redispass
+        command: worker

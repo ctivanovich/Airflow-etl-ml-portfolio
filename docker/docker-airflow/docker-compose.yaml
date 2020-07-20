@@ -1,0 +1,40 @@
+version: '3'
+services:
+    postgres:
+        image: postgres:10.0
+        restart: always
+        environment:
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+        # Uncomment these lines to persist data on the local filesystem.
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        volumes:
+            - /opt/pgdata:/var/lib/postgresql/data/pgdata
+        ports:
+            - "5432:5432"
+    webserver:
+        image: gcr.io/..../airflow:3.0
+        restart: always
+        depends_on:
+            - postgres
+        environment:
+            - LOAD_EX=n
+            - EXECUTOR=Local
+            #these vars must exist in the host environ at compose time
+            - AIRFLOW__CORE__FERNET_KEY=${AIRFLOW__CORE__FERNET_KEY:?err}
+            - AIRFLOW__GOOGLE__CLIENT_ID=${AIRFLOW__GOOGLE__CLIENT_ID:?err}
+            - AIRFLOW__GOOGLE__CLIENT_SECRET=${AIRFLOW__GOOGLE__CLIENT_SECRET:?err}
+        volumes: #mounting requirements: dags, repositories, gitlab ssh keys, gcloud SA for gcs & bq
+            - ./airflow/dags:/usr/local/airflow/dags
+            - .:/opt
+            - ./secrets:/opt/secrets
+            - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+            - "8080:8080"
+        command: webserver
+        healthcheck:
+            test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+            interval: 30s
+            timeout: 30s
+            retries: 3

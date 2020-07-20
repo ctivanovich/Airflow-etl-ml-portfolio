@@ -1,0 +1,10 @@
+# /etc/systemd/system/metabase.service
+[Unit]
+Description=Launch Metabase instance on VM start-up.
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /usr/bin/metabase_start.sh
+
+[Install]
+WantedBy=multi-user.target
