@@ -1,9 +1,0 @@
-no_components: 100
-
-learning_schedule: 'adagrad' # – one of (‘adagrad’, ‘adadelta’).
-
-loss: 'warp' # one of (‘logistic’, ‘bpr’, ‘warp’, ‘warp-kos’): the loss function.
-
-learning_rate: 0.1
-
-max_sampled: 10
