@@ -3,7 +3,7 @@
 This a portfolio container Airflow docker-compose and configuration files, Airflow machine learning and data ETL DAG definitions, supporing modules for these operations, machine and deep learning run-time Dockerfile definitions (almost everything here gets containerized at run-time as well), and the structure of the repository is essential to the smooth functioning and updating of Airflow in production.
 
 #### The meaning of ....
-I use .... to denote redacted information (such as sensitive dir, varbiable, and file location information).
+I use .... to denote redacted information (such as sensitive dir, variable, and file location information).
 
 ### Structure of this repository and explanations
 <pre>
